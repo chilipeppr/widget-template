@@ -1559,49 +1559,45 @@ var getMainPage = function() {
   return html;
 }
 
-var getGithubUrl = function() {
+var fileAutoGeneratePath = "auto-generated-widget.html"
+var fileJsPath = "widget.js"
+var fileCssPath = "widget.css"
+var fileHtmlPath = "widget.html"
 
-    // new approach. use the command line from git
-    // git config --get remote.origin.url
-    
-    var childproc = require('child_process');
-    var cmd = 'git config --get remote.origin.url';
-    
-    var stdout = childproc.execSync(cmd, { encoding: 'utf8' });
-    //console.log("Got the following Github URL:", stdout);
-    
-    // see what format we got back
-    if (stdout.match(/\.git/)) {
-        
-        // format is git@github.com:chilipeppr/widget-xbox.git
-        var re = /.*github.com:/i;
-        var url = stdout.replace(re, "");
-        url = url.replace(/.git[\s\S]*$/i, ""); // remove end
-        
-        // prepend with clean githut url
-        url = "http://github.com/" + url;
-        
-        var rawurl = url.replace(/\/github.com\//i, "/raw.githubusercontent.com/");
-        rawurl += '/master/auto-generated-widget.html';
-        
-    } else {
-        
-        // format is https://github.com/chilipeppr/widget-xbox
-        // console.log("format has no .git in it");
-        url = stdout;
-        url = url.replace(/[\s]*$/i, ""); // remove end
-        // console.log(url);
-        var rawurl = url.replace(/\/github.com\//i, "/raw.githubusercontent.com/");
-        rawurl += '/master/auto-generated-widget.html';
-    }
-    var ret = {
-        stdout: stdout,
-        url: url,
-        rawurl : rawurl
-    };
-    
-    //console.log("ret:", ret);
-    return ret;
+var getGithubUrl = function(callback) {
+
+  // new approach. use the command line from git
+  // git config --get remote.origin.url
+  
+  var childproc = require('child_process');
+  var cmd = 'git config --get remote.origin.url';
+
+  var stdout = childproc.execSync(cmd, { encoding: 'utf8' });
+  console.log("Got the following Github URL:", stdout);
+
+  var re = /.*github.com:/i;
+  var url = stdout.replace(re, "");
+  url = url.replace(/.git[\s\S]{0,1}$/i, ""); // remove end
+  console.log("after removing *.git:", url);
+
+  // see if github.com already in url
+  if (url.startsWith("https://github.com") || url.startsWith("http://github.com")) {
+    // full url already in there
+  } else {
+    // prepend with clean githut url
+    url = "http://github.com/" + url;
+  }
+  
+  var rawurl = url.replace(/\/github.com\//i, "/raw.githubusercontent.com/");
+  rawurl += '/master/' + fileAutoGeneratePath;
+  
+  var ret = {
+    url: url,
+    rawurl : rawurl
+  };
+  
+  console.log("ret:", ret);
+  return ret;
     
 }
 
