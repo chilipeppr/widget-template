@@ -27,8 +27,8 @@ var mimeTypes = {
 console.log("Starting...");
 
 if (process.env.PORT == undefined) {
-  console.log("Port undefined from env var so setting to 9000");
-  process.env.PORT = 9000;
+  process.env.PORT = 9002;
+  console.log("Port undefined from env var so setting to " + process.env.PORT);
 }
 
 http.createServer(function(req, res) {
@@ -1675,10 +1675,10 @@ var getAllUrls = function() {
       //     process.env.C9_PROJECT + '-' + process.env.C9_USER +
       //     '.c9users.io/widget.html';
       ret.edit = '(Local dev. No edit URL)';
-      ret.test = 'http://localhost:9000/widget.html';
-      ret.testNoSsl = 'http://localhost:9000/widget.html';
+      ret.test = 'http://localhost:' + process.env.PORT + '/widget.html';
+      ret.testNoSsl = 'http://localhost:' + process.env.PORT + '/widget.html';
       // https://widget-xbox-chilipeppr.c9users.io/
-      ret.runmeHomepage = 'http://localhost:9000/';
+      ret.runmeHomepage = 'http://localhost:' + process.env.PORT + '/';
     }
     
     return ret;
